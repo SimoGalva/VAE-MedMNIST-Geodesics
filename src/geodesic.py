@@ -14,6 +14,10 @@ class RiemannianAnalyzer:
           self.encoder = self.network.getEncoder()
           self.decoder = self.network.getDecoder()
 
+          self.network.eval()
+          self.encoder.eval()
+          self.decoder.eval()
+
   def generate(self, batch = 1):
       with torch.no_grad():
         ret = self.network.generate(batch_size = batch)

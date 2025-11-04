@@ -5,8 +5,6 @@ import torch
 import torch.autograd.functional as functional
 import time
 
-from vae import VAE
-
 
 class RiemannianAnalyzer:
   def __init__(self, Zdim):

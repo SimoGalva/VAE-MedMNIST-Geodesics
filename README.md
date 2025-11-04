@@ -64,6 +64,10 @@ Notebook: `notebooks/02_geodesic_analysis.ipynb`
 ## 📌 Results (qualitative)
 
 In this setup, geodesic paths and straight latent interpolations decode to near-identical visual output — supporting the “near-flat latent manifold” behavior reported in prior literature.
+Example of expected output:
+
+![GUI Screenshot](results/figs/geodesic_vs_segment.png)
+
 
 ---
 

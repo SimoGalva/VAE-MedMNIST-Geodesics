@@ -10,20 +10,12 @@ from vae import VAE
 
 class RiemannianAnalyzer:
   def __init__(self, Zdim):
-      #setting params
-      self.Zdim = Zdim
-      self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
-      #setting NeuralNetwork
-      self.network = VAE((1, 28, 28), nhid = Zdim)
-      checkpoint = torch.load("VAE.pt", map_location = self.device)
-      self.network.load_state_dict(checkpoint["net"])
-      self.network.to(self.device)
-      self.network.eval()
-
-      #setting encoder, decoder
-      self.encoder = self.network.getEncoder().to(self.device)
-      self.decoder = self.network.getDecoder().to(self.device)
+      def __init__(self, Zdim, model, device):
+          self.Zdim = Zdim
+          self.device = device
+          self.network = model.to(device)
+          self.encoder = self.network.getEncoder()
+          self.decoder = self.network.getDecoder()
 
   def generate(self, batch = 1):
       with torch.no_grad():

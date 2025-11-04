@@ -7,8 +7,7 @@ import time
 
 
 class RiemannianAnalyzer:
-  def __init__(self, Zdim):
-      def __init__(self, Zdim, model, device):
+  def __init__(self, Zdim, model, device):
           self.Zdim = Zdim
           self.device = device
           self.network = model.to(device)

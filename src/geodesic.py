@@ -73,6 +73,7 @@ class GeodesicHandler_2Points(RiemannianAnalyzer):
       super().__init__(Zdim, model, device)  # <--- pass these through
       self.T = T
       self.z = torch.zeros(size=(self.Zdim, self.T + 1), device=device)
+      self.segment = torch.clone(self.z).to(device)
 
       #building segment between z_start, z_end
       z0 = z_start.reshape(self.Zdim)
@@ -136,11 +137,12 @@ class GeodesicHandler_2Points(RiemannianAnalyzer):
                     - (self.T) * torch.t(jac_decoder_zi.to(self.device)) @ (decoder_zi_piu.to(self.device) - 2*decoder_zi.to(self.device) + decoder_zi_meno.to(self.device))
                    ).to(self.device)
 
-      return nabla_zi_E
+      return nabla_zi_E.to(self.device)
 
   # restituisce una matrice che ha per colonne i nabla_zi_E
   def compute_nabla_E(self):
-    nabla_E = torch.zeros(size = (16,self.T + 1))
+    nabla_E = torch.zeros(size=(self.Zdim, self.T + 1), device=self.device)
+
     for i in range(1, self.T):
       nabla_E[:, i] = self.compute_nabla_zi_E(index_i = i).reshape(16)
 

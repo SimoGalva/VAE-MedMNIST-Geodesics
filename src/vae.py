@@ -87,29 +87,35 @@ class Decoder(nn.Module):
         else:
             return self.decode(torch.cat((z, y), dim=1)).view(-1, c, w, h)
 
+# in src/vae.py
+
 class VAE(nn.Module):
-    def __init__(self, shape, nhid = 16):
+    def __init__(self, shape, nhid=16):
         super(VAE, self).__init__()
         self.dim = nhid
         self.encoder = Encoder(shape, nhid)
         self.decoder = Decoder(shape, nhid)
 
     def sampling(self, mean, logvar):
-        eps = torch.randn(mean.shape)
+        # create noise on the SAME device and shape as mean
+        eps = torch.randn_like(mean)
         sigma = 0.5 * torch.exp(logvar)
         return mean + eps * sigma
 
     def forward(self, x):
         mean, logvar = self.encoder(x)
+        # defensive: ensure encoder outputs live on the same device as x
+        mean = mean.to(x.device)
+        logvar = logvar.to(x.device)
         z = self.sampling(mean, logvar)
-        return self.decoder(z), mean, logvar
+        x_hat = self.decoder(z)
+        return x_hat, mean, logvar
 
-    def generate(self, batch_size = None):
-        z = torch.randn((batch_size, self.dim)) if batch_size else torch.randn((1, self.dim))
-        res = self.decoder(z)
-        if not batch_size:
-            res = res.squeeze(0)
-        return res
+    def generate(self, batch_size=None):
+        dev = next(self.parameters()).device
+        z = torch.randn((batch_size or 1, self.dim), device=dev)
+        out = self.decoder(z)
+        return out if batch_size else out.squeeze(0)
 
     def getDecoder(self):
       return self.decoder

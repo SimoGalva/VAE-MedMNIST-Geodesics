@@ -66,13 +66,13 @@ class RiemannianAnalyzer:
       return ret
 
 
+# T is the geodesic maximum index of point, which means the number of points is T+1
 class GeodesicHandler_2Points(RiemannianAnalyzer):
 
-  # T is the geodesic maximum index of point, which means the number of points is T+1
-  def __init__(self, Zdim, T, z_start, z_end):
-      super(GeodesicHandler_2Points, self).__init__(Zdim)
+  def __init__(self, Zdim, T, z_start, z_end, model, device):
+      super().__init__(Zdim, model, device)  # <--- pass these through
       self.T = T
-      self.z = torch.zeros(size=(self.Zdim, self.T + 1))
+      self.z = torch.zeros(size=(self.Zdim, self.T + 1), device=device)
 
       #building segment between z_start, z_end
       z0 = z_start.reshape(self.Zdim)
